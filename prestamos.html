@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Préstamos y Devoluciones | Soporte TI - Control de Préstamos</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <style>
+        :root {
+            --naranja-brand: #FC4C02;
+            --naranja-hover: #e04400;
+            --negro-nav: #050507;
+            --negro-texto: #18181b;
+            --gris-texto: #52525b;
+            --fondo-claro: #f7f7fa;
+        }
+
+        body.pagina-prestamos {
+            background-color: var(--fondo-claro);
+            color: var(--negro-texto);
+        }
+
+        /* Navbar negra con doble botón a la derecha */
+        .pagina-prestamos .navbar {
+            background-color: var(--negro-nav);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+            padding: 0.85rem 2rem;
+        }
+
+        .pagina-prestamos .navbar-brand {
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 1.15rem;
+            letter-spacing: 0.6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .pagina-prestamos .nav-links a {
+            color: #e4e4e7;
+            font-weight: 500;
+            border-radius: 0;
+            padding: 0.45rem 0.75rem;
+        }
+
+        .pagina-prestamos .nav-links a:hover {
+            background-color: transparent;
+            color: #ffffff;
+        }
+
+        .pagina-prestamos .nav-links a.activo {
+            background-color: transparent;
+            color: #ffffff;
+            font-weight: 700;
+            border-bottom: 2px solid #ffffff;
+        }
+
+        .nav-acciones-der {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .btn-nav-outline-dark {
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            background: transparent;
+            color: #ffffff;
+            padding: 0.48rem 1rem;
+            border-radius: 3px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .btn-nav-outline-dark:hover {
+            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-nav-naranja {
+            background: var(--naranja-brand);
+            border: 1px solid var(--naranja-brand);
+            color: #ffffff;
+            padding: 0.48rem 1rem;
+            border-radius: 3px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .btn-nav-naranja:hover {
+            background: var(--naranja-hover);
+        }
+
+        /* Hero oscuro bosque/asfalto con métricas horizontales sobre ruta naranja */
+        .hero-prestamos {
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 76% 58%, rgba(252, 76, 2, 0.22) 0%, rgba(20, 42, 32, 0.35) 42%, rgba(10, 12, 14, 0.97) 78%),
+                linear-gradient(120deg, #0b120f 0%, #17261f 50%, #101216 100%);
+            color: #ffffff;
+            padding: 4.2rem 2rem;
+            border-bottom: 1px solid #27272a;
+        }
+
+        .hero-prestamos::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 36px 36px;
+            pointer-events: none;
+        }
+
+        .hero-prestamos-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.35fr 0.95fr;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .hero-prestamos h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.08;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin-bottom: 1.1rem;
+            max-width: 610px;
+        }
+
+        .hero-prestamos p {
+            font-size: 1.06rem;
+            color: #e4e4e7;
+            margin-bottom: 1.85rem;
+            max-width: 540px;
+            font-weight: 500;
+        }
+
+        .hero-botones {
+            display: flex;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero-solid {
+            display: inline-block;
+            background-color: var(--naranja-brand);
+            color: #ffffff;
+            padding: 0.85rem 2.2rem;
+            border-radius: 3px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .btn-hero-solid:hover {
+            background-color: var(--naranja-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-hero-ghost {
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            color: #ffffff;
+            padding: 0.85rem 1.6rem;
+            border-radius: 3px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .btn-hero-ghost:hover {
+            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Bloque derecho: 3 métricas horizontales encima del trazo naranja */
+        .hero-ruta-derecha {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .metricas-horizontales {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 0.65rem;
+            padding-right: 0.5rem;
+        }
+
+        .metrica-col .etiqueta {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #d4d4d8;
+        }
+
+        .metrica-col .valor {
+            display: block;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-top: 0.15rem;
+        }
+
+        .trazo-ruta-horizontal {
+            width: 100%;
+            max-width: 340px;
+            height: 115px;
+            filter: drop-shadow(0 0 12px rgba(252, 76, 2, 0.55));
+        }
+
+        /* Paneles y formularios inferiores */
+        .pagina-prestamos .contenedor {
+            margin-top: 2rem;
+        }
+
+        .pagina-prestamos .panel {
+            border: 1px solid #e4e4e7;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .pagina-prestamos .panel h2 {
+            color: var(--negro-texto);
+        }
+
+        .pagina-prestamos input:focus,
+        .pagina-prestamos select:focus {
+            border-color: var(--naranja-brand);
+        }
+
+        .pagina-prestamos .btn-primario {
+            background-color: var(--naranja-brand);
+            color: #ffffff;
+            border-radius: 3px;
+        }
+
+        .pagina-prestamos .btn-primario:hover {
+            background-color: var(--naranja-hover);
+        }
+
+        .pagina-prestamos .btn-exito {
+            border-radius: 3px;
+        }
+
+        .pagina-prestamos th {
+            color: var(--negro-texto);
+            border-bottom: 2px solid #e4e4e7;
+        }
+
+        @media (max-width: 920px) {
+            .nav-acciones-der {
+                display: none;
+            }
+            .hero-prestamos-inner {
+                grid-template-columns: 1fr;
+            }
+            .hero-prestamos h1 {
+                font-size: 2.2rem;
+            }
+            .hero-ruta-derecha {
+                align-items: flex-start;
+            }
+            .metricas-horizontales {
+                gap: 1.4rem;
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body class="pagina-prestamos">
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 2L4 14H11L10 22L20 10H13L12 2Z" fill="#FC4C02"/>
+            </svg>
+            Soporte TI | Préstamos
+        </a>
+
+        <button class="nav-toggle" id="btnMenu" aria-label="Abrir menú">☰ Menú</button>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="equipos.html">Equipos y Categorías</a></li>
+            <li><a href="solicitantes.html">Usuarios / Solicitantes</a></li>
+            <li><a href="prestamos.html" class="activo">Préstamos y Devoluciones</a></li>
+            <li><a href="consultas.html">Consultas y Reportes</a></li>
+        </ul>
+
+        <div class="nav-acciones-der">
+            <a href="index.html#acceso-personal" class="btn-nav-outline-dark">Iniciar sesión</a>
+            <a href="#form-nuevo-prestamo" class="btn-nav-naranja">Nuevo préstamo</a>
+        </div>
+    </nav>
+
+    <!-- Hero oscuro con métricas horizontales sobre ruta naranja -->
+    <header class="hero-prestamos">
+        <div class="hero-prestamos-inner">
+            <div>
+                <h1>Controla cada préstamo y devolución en tiempo real</h1>
+                <p>Operación transaccional: solo permite seleccionar equipos en estado disponible y actualiza automáticamente su disponibilidad.</p>
+                <div class="hero-botones">
+                    <a href="#form-nuevo-prestamo" class="btn-hero-solid">Registrar préstamo</a>
+                    <a href="#form-devolucion" class="btn-hero-ghost">Recibir devolución</a>
+                </div>
+            </div>
+
+            <div class="hero-ruta-derecha" aria-hidden="true">
+                <div class="metricas-horizontales">
+                    <div class="metrica-col">
+                        <span class="etiqueta">En curso</span>
+                        <span class="valor">6 ACTIVOS</span>
+                    </div>
+                    <div class="metrica-col">
+                        <span class="etiqueta">Disponibles</span>
+                        <span class="valor">16 EQUIPOS</span>
+                    </div>
+                    <div class="metrica-col">
+                        <span class="etiqueta">Integridad</span>
+                        <span class="valor">100% SQL</span>
+                    </div>
+                </div>
+
+                <svg class="trazo-ruta-horizontal" viewBox="0 0 340 115" fill="none">
+                    <path d="M10 22 C45 10, 75 18, 92 34 C108 50, 62 58, 76 74 C90 90, 148 96, 172 78 C196 60, 232 62, 268 72 C298 80, 326 68, 324 44"
+                          stroke="#FC4C02" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+    </header>
+
+    <main class="contenedor">
+        <section class="panel" id="form-nuevo-prestamo">
+            <h2>1. Nuevo Préstamo de Equipo</h2>
+            <form action="api/registrar_prestamo.php" method="POST" data-demo-form="Nuevo Préstamo">
+                <div class="form-grid">
+                    <div class="form-grupo">
+                        <label for="id_solicitante">Solicitante *</label>
+                        <select id="id_solicitante" name="id_solicitante" required>
+                            <option value="">Seleccione solicitante...</option>
+                            <option value="2">20460115 - Carlos Méndez Ruiz</option>
+                            <option value="3">EMP-089 - Ana Morales</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="id_encargado">Encargado que entrega *</label>
+                        <select id="id_encargado" name="id_encargado" required>
+                            <option value="1">EMP-001 - Roberto Gómez (Encargado)</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="id_equipo">Equipo Disponible *</label>
+                        <select id="id_equipo" name="id_equipo" required>
+                            <option value="">Seleccione equipo disponible...</option>
+                            <option value="2">INV-LAP-002 | Laptop Dell Latitude 5430</option>
+                            <option value="5">INV-KIT-001 | Kit Arduino Mega Completo</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="fecha_devolucion_estimada">Fecha y Hora de Devolución Estimada *</label>
+                        <input type="datetime-local" id="fecha_devolucion_estimada" name="fecha_devolucion_estimada" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="condicion_entrega">Condición Física de Entrega *</label>
+                        <input type="text" id="condicion_entrega" name="condicion_entrega" value="Buen estado" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="motivo_uso">Motivo / Actividad Institucional</label>
+                        <input type="text" id="motivo_uso" name="motivo_uso" placeholder="Práctica de laboratorio Aula B4">
+                    </div>
+                </div>
+                <div class="acciones-form">
+                    <button type="submit" class="btn btn-primario">Confirmar Préstamo</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel" id="form-devolucion">
+            <h2>2. Registrar Devolución de Equipo</h2>
+            <form action="api/registrar_devolucion.php" method="POST" data-demo-form="Registro de Devolución">
+                <div class="form-grid">
+                    <div class="form-grupo">
+                        <label for="id_prestamo_dev">Préstamo Activo *</label>
+                        <select id="id_prestamo_dev" name="id_prestamo" required>
+                            <option value="">Seleccione préstamo a cerrar...</option>
+                            <option value="104">Folio #104 — INV-LAP-001 (Carlos Méndez)</option>
+                            <option value="101">Folio #101 — INV-PROY-003 (Ana Morales - Atrasado)</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="condicion_devolucion">Condición al Recibir *</label>
+                        <input type="text" id="condicion_devolucion" name="condicion_devolucion" placeholder="Sin daños, accesorios completos" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="estado_final_equipo">Destino del Equipo tras Revisión *</label>
+                        <select id="estado_final_equipo" name="estado_final_equipo" required>
+                            <option value="disponible">Liberar como Disponible</option>
+                            <option value="mantenimiento">Enviar a Mantenimiento (Presenta falla)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="acciones-form">
+                    <button type="submit" class="btn btn-exito">Registrar Devolución</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>Préstamos en Curso</h2>
+            <div class="tabla-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Folio</th>
+                            <th>Equipo</th>
+                            <th>Solicitante</th>
+                            <th>Encargado</th>
+                            <th>Entrega</th>
+                            <th>Devolución Estimada</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#104</td>
+                            <td>INV-LAP-001 - Laptop Dell Latitude 5430</td>
+                            <td>Carlos Méndez Ruiz</td>
+                            <td>Roberto Gómez</td>
+                            <td>2026-11-18 09:00</td>
+                            <td>2026-11-18 18:00</td>
+                            <td><span class="badge badge-activo">activo</span></td>
+                        </tr>
+                        <tr>
+                            <td>#101</td>
+                            <td>INV-PROY-003 - Proyector Epson X49</td>
+                            <td>Ana Morales</td>
+                            <td>Roberto Gómez</td>
+                            <td>2026-11-15 10:30</td>
+                            <td>2026-11-16 14:00</td>
+                            <td><span class="badge badge-atrasado">atrasado</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>Taller de Base de Datos — Proyecto Integrador</footer>
+    <script src="js/app.js"></script>
+</body>
+</html>

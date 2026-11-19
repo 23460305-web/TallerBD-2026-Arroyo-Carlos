@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios y Solicitantes | Soporte TI - Control de Préstamos</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <style>
+        :root {
+            --naranja-brand: #FC4C02;
+            --naranja-hover: #e04400;
+            --negro-nav: #050507;
+            --negro-texto: #18181b;
+            --gris-texto: #52525b;
+            --fondo-claro: #f7f7fa;
+        }
+
+        body.pagina-solicitantes {
+            background-color: var(--fondo-claro);
+            color: var(--negro-texto);
+        }
+
+        /* Navbar negra estilo editorial con doble botón */
+        .pagina-solicitantes .navbar {
+            background-color: var(--negro-nav);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+            padding: 0.85rem 2rem;
+        }
+
+        .pagina-solicitantes .navbar-brand {
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 1.15rem;
+            letter-spacing: 0.6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .pagina-solicitantes .nav-links a {
+            color: #e4e4e7;
+            font-weight: 500;
+            border-radius: 0;
+            padding: 0.45rem 0.75rem;
+        }
+
+        .pagina-solicitantes .nav-links a:hover {
+            background-color: transparent;
+            color: #ffffff;
+        }
+
+        .pagina-solicitantes .nav-links a.activo {
+            background-color: transparent;
+            color: #ffffff;
+            font-weight: 700;
+            border-bottom: 2px solid #ffffff;
+        }
+
+        .nav-acciones-der {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .btn-nav-outline-dark {
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            background: transparent;
+            color: #ffffff;
+            padding: 0.48rem 1rem;
+            border-radius: 3px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .btn-nav-outline-dark:hover {
+            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-nav-naranja {
+            background: var(--naranja-brand);
+            border: 1px solid var(--naranja-brand);
+            color: #ffffff;
+            padding: 0.48rem 1rem;
+            border-radius: 3px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .btn-nav-naranja:hover {
+            background: var(--naranja-hover);
+        }
+
+        /* Hero panorámico oscuro cálido con tipografía gigante a la izquierda y telemetría a la derecha */
+        .hero-comunidad {
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 78% 35%, rgba(252, 76, 2, 0.28) 0%, rgba(120, 53, 15, 0.25) 36%, rgba(15, 15, 18, 0.96) 75%),
+                linear-gradient(115deg, #121215 0%, #231712 52%, #18181b 100%);
+            color: #ffffff;
+            padding: 4rem 2rem;
+            border-bottom: 1px solid #27272a;
+        }
+
+        .hero-comunidad::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+            background-size: 24px 24px;
+            pointer-events: none;
+        }
+
+        .hero-comunidad-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.45fr 0.85fr;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .hero-comunidad h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.08;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin-bottom: 1.1rem;
+            max-width: 620px;
+        }
+
+        .hero-comunidad p {
+            font-size: 1.08rem;
+            color: #e4e4e7;
+            margin-bottom: 1.85rem;
+            max-width: 520px;
+            font-weight: 500;
+        }
+
+        .btn-hero-solid {
+            display: inline-block;
+            background-color: var(--naranja-brand);
+            color: #ffffff;
+            padding: 0.85rem 2.2rem;
+            border-radius: 3px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .btn-hero-solid:hover {
+            background-color: var(--naranja-hover);
+            transform: translateY(-1px);
+        }
+
+        /* Bloque derecho con trazo naranja y métricas apiladas */
+        .hero-telemetria {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 1.5rem;
+        }
+
+        .trazo-naranja {
+            width: 95px;
+            height: 220px;
+            filter: drop-shadow(0 0 12px rgba(252, 76, 2, 0.55));
+        }
+
+        .metricas-apiladas {
+            display: flex;
+            flex-direction: column;
+            gap: 1.35rem;
+            text-align: right;
+        }
+
+        .metrica-item .etiqueta {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #d4d4d8;
+        }
+
+        .metrica-item .valor {
+            display: block;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-top: 0.1rem;
+        }
+
+        /* Paneles, botones y tabla inferiores */
+        .pagina-solicitantes .contenedor {
+            margin-top: 2rem;
+        }
+
+        .pagina-solicitantes .panel {
+            border: 1px solid #e4e4e7;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .pagina-solicitantes .panel h2 {
+            color: var(--negro-texto);
+        }
+
+        .pagina-solicitantes input:focus,
+        .pagina-solicitantes select:focus {
+            border-color: var(--naranja-brand);
+        }
+
+        .pagina-solicitantes .btn-primario {
+            background-color: var(--naranja-brand);
+            color: #ffffff;
+            border-radius: 3px;
+        }
+
+        .pagina-solicitantes .btn-primario:hover {
+            background-color: var(--naranja-hover);
+        }
+
+        .pagina-solicitantes th {
+            color: var(--negro-texto);
+            border-bottom: 2px solid #e4e4e7;
+        }
+
+        @media (max-width: 920px) {
+            .nav-acciones-der {
+                display: none;
+            }
+            .hero-comunidad-inner {
+                grid-template-columns: 1fr;
+            }
+            .hero-comunidad h1 {
+                font-size: 2.2rem;
+            }
+            .hero-telemetria {
+                justify-content: flex-start;
+                padding-top: 0.5rem;
+            }
+            .metricas-apiladas {
+                flex-direction: row;
+                flex-wrap: wrap;
+                text-align: left;
+                gap: 1.5rem;
+            }
+            .trazo-naranja {
+                height: 110px;
+                width: 60px;
+            }
+        }
+    </style>
+</head>
+<body class="pagina-solicitantes">
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 2L4 14H11L10 22L20 10H13L12 2Z" fill="#FC4C02"/>
+            </svg>
+            Soporte TI | Préstamos
+        </a>
+
+        <button class="nav-toggle" id="btnMenu" aria-label="Abrir menú">☰ Menú</button>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="equipos.html">Equipos y Categorías</a></li>
+            <li><a href="solicitantes.html" class="activo">Usuarios / Solicitantes</a></li>
+            <li><a href="prestamos.html">Préstamos y Devoluciones</a></li>
+            <li><a href="consultas.html">Consultas y Reportes</a></li>
+        </ul>
+
+        <div class="nav-acciones-der">
+            <a href="index.html#acceso-personal" class="btn-nav-outline-dark">Iniciar sesión</a>
+            <a href="#form-registro-usuario" class="btn-nav-naranja">Registrar alta</a>
+        </div>
+    </nav>
+
+    <!-- Hero estilo editorial con trazo naranja y métricas -->
+    <header class="hero-comunidad">
+        <div class="hero-comunidad-inner">
+            <div>
+                <h1>Gestiona con orden a cada solicitante y encargado</h1>
+                <p>Control de solicitantes, encargados de entrega y administradores mediante matrícula o número de empleado.</p>
+                <a href="#form-registro-usuario" class="btn-hero-solid">Registrar usuario</a>
+            </div>
+
+            <div class="hero-telemetria" aria-hidden="true">
+                <svg class="trazo-naranja" viewBox="0 0 100 220" fill="none">
+                    <path d="M25 15 C65 15, 75 55, 45 85 C15 115, 80 135, 50 170 C30 192, 65 205, 85 205"
+                          stroke="#FC4C02" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+
+                <div class="metricas-apiladas">
+                    <div class="metrica-item">
+                        <span class="etiqueta">Solicitantes</span>
+                        <span class="valor">148 REG.</span>
+                    </div>
+                    <div class="metrica-item">
+                        <span class="etiqueta">Encargados</span>
+                        <span class="valor">6 ACTIVOS</span>
+                    </div>
+                    <div class="metrica-item">
+                        <span class="etiqueta">Validación</span>
+                        <span class="valor">100% TI</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="contenedor">
+        <section class="panel" id="form-registro-usuario">
+            <h2>Registrar Nuevo Usuario / Solicitante</h2>
+            <form action="api/usuarios.php" method="POST" data-demo-form="Registro de Usuario">
+                <div class="form-grid">
+                    <div class="form-grupo">
+                        <label for="numero_control">No. Control / No. Empleado *</label>
+                        <input type="text" id="numero_control" name="numero_control" placeholder="21460234 o EMP-102" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="nombre">Nombre(s) *</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Laura Sofía" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="apellidos">Apellidos *</label>
+                        <input type="text" id="apellidos" name="apellidos" placeholder="Ramírez Ortega" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="correo">Correo Institucional *</label>
+                        <input type="email" id="correo" name="correo" placeholder="laura.ramirez@institucion.edu.mx" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="telefono">Teléfono de Contacto</label>
+                        <input type="tel" id="telefono" name="telefono" placeholder="3121234567">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="rol">Rol en el Sistema *</label>
+                        <select id="rol" name="rol" required>
+                            <option value="solicitante">Solicitante</option>
+                            <option value="encargado">Encargado de Préstamos</option>
+                            <option value="administrador">Administrador</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="password_hash">Contraseña de Acceso *</label>
+                        <input type="password" id="password_hash" name="password" placeholder="Contraseña inicial" required>
+                    </div>
+                </div>
+                <div class="acciones-form">
+                    <button type="submit" class="btn btn-primario">Registrar Usuario</button>
+                    <button type="reset" class="btn btn-secundario">Limpiar</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>Padrón de Usuarios Registrados</h2>
+            <div class="barra-filtro">
+                <input type="text" placeholder="Buscar por matrícula, nombre o rol..." data-filtro-tabla="tablaUsuarios">
+            </div>
+            <div class="tabla-responsive">
+                <table id="tablaUsuarios">
+                    <thead>
+                        <tr>
+                            <th>No. Control</th>
+                            <th>Nombre Completo</th>
+                            <th>Correo</th>
+                            <th>Teléfono</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>EMP-001</td>
+                            <td>Roberto Gómez Díaz</td>
+                            <td>roberto.gomez@institucion.edu.mx</td>
+                            <td>3121002233</td>
+                            <td>Administrador</td>
+                            <td><span class="badge badge-disponible">Activo</span></td>
+                            <td><button class="btn btn-secundario btn-sm">Editar</button></td>
+                        </tr>
+                        <tr>
+                            <td>20460115</td>
+                            <td>Carlos Méndez Ruiz</td>
+                            <td>carlos.mendez@institucion.edu.mx</td>
+                            <td>3121998877</td>
+                            <td>Solicitante</td>
+                            <td><span class="badge badge-disponible">Activo</span></td>
+                            <td><button class="btn btn-secundario btn-sm">Editar</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>Taller de Base de Datos — Proyecto Integrador</footer>
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultas y Reportes | Soporte TI - Control de Préstamos</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <style>
+        :root {
+            --naranja-brand: #FC4C02;
+            --naranja-hover: #e04400;
+            --negro-nav: #050507;
+            --negro-texto: #18181b;
+            --gris-texto: #52525b;
+            --fondo-claro: #f7f7fa;
+        }
+
+        body.pagina-consultas {
+            background-color: var(--fondo-claro);
+            color: var(--negro-texto);
+        }
+
+        /* Navbar negra con doble botón a la derecha */
+        .pagina-consultas .navbar {
+            background-color: var(--negro-nav);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+            padding: 0.85rem 2rem;
+        }
+
+        .pagina-consultas .navbar-brand {
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 1.15rem;
+            letter-spacing: 0.6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .pagina-consultas .nav-links a {
+            color: #e4e4e7;
+            font-weight: 500;
+            border-radius: 0;
+            padding: 0.45rem 0.75rem;
+        }
+
+        .pagina-consultas .nav-links a:hover {
+            background-color: transparent;
+            color: #ffffff;
+        }
+
+        .pagina-consultas .nav-links a.activo {
+            background-color: transparent;
+            color: #ffffff;
+            font-weight: 700;
+            border-bottom: 2px solid #ffffff;
+        }
+
+        .nav-acciones-der {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .btn-nav-outline-dark {
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            background: transparent;
+            color: #ffffff;
+            padding: 0.48rem 1rem;
+            border-radius: 3px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .btn-nav-outline-dark:hover {
+            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-nav-naranja {
+            background: var(--naranja-brand);
+            border: 1px solid var(--naranja-brand);
+            color: #ffffff;
+            padding: 0.48rem 1rem;
+            border-radius: 3px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .btn-nav-naranja:hover {
+            background: var(--naranja-hover);
+        }
+
+        /* Hero analítico oscuro con gráfica de actividad naranja */
+        .hero-consultas {
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 78% 45%, rgba(252, 76, 2, 0.25) 0%, rgba(30, 27, 75, 0.25) 38%, rgba(9, 9, 11, 0.98) 76%),
+                linear-gradient(125deg, #09090b 0%, #14141c 55%, #18181b 100%);
+            color: #ffffff;
+            padding: 4rem 2rem;
+            border-bottom: 1px solid #27272a;
+        }
+
+        .hero-consultas::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 22px 22px;
+            pointer-events: none;
+        }
+
+        .hero-consultas-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.35fr 0.95fr;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .hero-consultas h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.08;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin-bottom: 1.1rem;
+            max-width: 610px;
+        }
+
+        .hero-consultas p {
+            font-size: 1.06rem;
+            color: #e4e4e7;
+            margin-bottom: 1.85rem;
+            max-width: 540px;
+            font-weight: 500;
+        }
+
+        .hero-botones {
+            display: flex;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero-solid {
+            display: inline-block;
+            background-color: var(--naranja-brand);
+            color: #ffffff;
+            padding: 0.85rem 2.2rem;
+            border-radius: 3px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .btn-hero-solid:hover {
+            background-color: var(--naranja-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-hero-ghost {
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            color: #ffffff;
+            padding: 0.85rem 1.6rem;
+            border-radius: 3px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .btn-hero-ghost:hover {
+            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Bloque derecho: tarjeta de telemetría y curva de rendimiento */
+        .hero-analitica-derecha {
+            background: rgba(24, 24, 27, 0.85);
+            border: 1px solid #27272a;
+            border-radius: 8px;
+            padding: 1.4rem;
+            backdrop-filter: blur(6px);
+        }
+
+        .metricas-analitica {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid #27272a;
+        }
+
+        .metrica-box .etiqueta {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #a1a1aa;
+        }
+
+        .metrica-box .valor {
+            display: block;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-top: 0.15rem;
+        }
+
+        .grafica-analitica {
+            width: 100%;
+            height: 95px;
+            filter: drop-shadow(0 4px 10px rgba(252, 76, 2, 0.4));
+        }
+
+        /* Paneles y tablas inferiores */
+        .pagina-consultas .contenedor {
+            margin-top: 2rem;
+        }
+
+        .pagina-consultas .panel {
+            border: 1px solid #e4e4e7;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .pagina-consultas .panel h2 {
+            color: var(--negro-texto);
+        }
+
+        .pagina-consultas input:focus,
+        .pagina-consultas select:focus {
+            border-color: var(--naranja-brand);
+        }
+
+        .pagina-consultas .btn-primario {
+            background-color: var(--naranja-brand);
+            color: #ffffff;
+            border-radius: 3px;
+        }
+
+        .pagina-consultas .btn-primario:hover {
+            background-color: var(--naranja-hover);
+        }
+
+        .pagina-consultas th {
+            color: var(--negro-texto);
+            border-bottom: 2px solid #e4e4e7;
+        }
+
+        @media (max-width: 920px) {
+            .nav-acciones-der {
+                display: none;
+            }
+            .hero-consultas-inner {
+                grid-template-columns: 1fr;
+            }
+            .hero-consultas h1 {
+                font-size: 2.2rem;
+            }
+            .metricas-analitica {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body class="pagina-consultas">
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 2L4 14H11L10 22L20 10H13L12 2Z" fill="#FC4C02"/>
+            </svg>
+            Soporte TI | Préstamos
+        </a>
+
+        <button class="nav-toggle" id="btnMenu" aria-label="Abrir menú">☰ Menú</button>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="equipos.html">Equipos y Categorías</a></li>
+            <li><a href="solicitantes.html">Usuarios / Solicitantes</a></li>
+            <li><a href="prestamos.html">Préstamos y Devoluciones</a></li>
+            <li><a href="consultas.html" class="activo">Consultas y Reportes</a></li>
+        </ul>
+
+        <div class="nav-acciones-der">
+            <a href="index.html#acceso-personal" class="btn-nav-outline-dark">Iniciar sesión</a>
+            <a href="#alertas-vencidos" class="btn-nav-naranja">Ver vencidos</a>
+        </div>
+    </nav>
+
+    <!-- Hero analítico oscuro -->
+    <header class="hero-consultas">
+        <div class="hero-consultas-inner">
+            <div>
+                <h1>Consultas y Seguimiento Operativo</h1>
+                <p>Reportes mediante consultas JOIN con nombres legibles de equipos, categorías y usuarios.</p>
+                <div class="hero-botones">
+                    <a href="#filtro-reportes" class="btn-hero-solid">Ejecutar consulta</a>
+                    <a href="#historial-movimientos" class="btn-hero-ghost">Historial completo</a>
+                </div>
+            </div>
+
+            <div class="hero-analitica-derecha" aria-hidden="true">
+                <div class="metricas-analitica">
+                    <div class="metrica-box">
+                        <span class="etiqueta">Consultas</span>
+                        <span class="valor">5 REPORTES</span>
+                    </div>
+                    <div class="metrica-box">
+                        <span class="etiqueta">Relaciones</span>
+                        <span class="valor">JOIN SQL</span>
+                    </div>
+                    <div class="metrica-box">
+                        <span class="etiqueta">Vencidos</span>
+                        <span class="valor" style="color:#FC4C02;">1 ALERTA</span>
+                    </div>
+                </div>
+
+                <svg class="grafica-analitica" viewBox="0 0 320 95" fill="none">
+                    <defs>
+                        <linearGradient id="areaNaranja" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#FC4C02" stop-opacity="0.45"/>
+                            <stop offset="100%" stop-color="#FC4C02" stop-opacity="0"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M5 78 L55 62 L105 68 L155 38 L205 46 L260 18 L315 26 L315 90 L5 90 Z" fill="url(#areaNaranja)"/>
+                    <path d="M5 78 L55 62 L105 68 L155 38 L205 46 L260 18 L315 26"
+                          stroke="#FC4C02" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="260" cy="18" r="5" fill="#FC4C02" stroke="#ffffff" stroke-width="2"/>
+                </svg>
+            </div>
+        </div>
+    </header>
+
+    <main class="contenedor">
+        <section class="panel" id="filtro-reportes">
+            <h2>Filtrar Reporte Específico</h2>
+            <form action="api/consultas.php" method="GET" data-demo-form="Consulta de Reporte">
+                <div class="form-grid">
+                    <div class="form-grupo">
+                        <label for="tipo_reporte">Tipo de Consulta Requerida</label>
+                        <select id="tipo_reporte" name="tipo_reporte">
+                            <option value="general">1. Listado general de equipos y situación actual</option>
+                            <option value="disponibles">2. Equipos disponibles para préstamo</option>
+                            <option value="activos">3. Préstamos activos y resguardante</option>
+                            <option value="vencidos">4. Préstamos con fecha de devolución vencida</option>
+                            <option value="historial">5. Historial por persona o equipo</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="criterio_busqueda">Buscar por No. Control o Código de Inventario</label>
+                        <input type="text" id="criterio_busqueda" name="q" placeholder="Ej. 20460115 o INV-LAP-001">
+                    </div>
+                </div>
+                <div class="acciones-form">
+                    <button type="submit" class="btn btn-primario">Ejecutar Consulta</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel" id="alertas-vencidos">
+            <h2>Alertas: Préstamos Vencidos (Consulta 4)</h2>
+            <div class="tabla-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Folio</th>
+                            <th>Equipo</th>
+                            <th>Solicitante</th>
+                            <th>Correo / Teléfono</th>
+                            <th>Fecha Estimada</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#101</td>
+                            <td>INV-PROY-003 — Proyector Epson X49</td>
+                            <td>Ana Morales (EMP-089)</td>
+                            <td>ana.morales@institucion.edu.mx / 3121445566</td>
+                            <td>2026-11-16 14:00</td>
+                            <td><span class="badge badge-atrasado">atrasado</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="panel" id="historial-movimientos">
+            <h2>Historial Completo de Movimientos (Consulta 5)</h2>
+            <div class="barra-filtro">
+                <input type="text" placeholder="Filtrar historial por equipo, solicitante o condición..." data-filtro-tabla="tablaHistorial">
+            </div>
+            <div class="tabla-responsive">
+                <table id="tablaHistorial">
+                    <thead>
+                        <tr>
+                            <th>Folio</th>
+                            <th>Código Inv.</th>
+                            <th>Equipo</th>
+                            <th>Solicitante</th>
+                            <th>Fecha Préstamo</th>
+                            <th>Fecha Devolución</th>
+                            <th>Condición Entrega / Devolución</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#098</td>
+                            <td>INV-LAP-001</td>
+                            <td>Laptop Dell Latitude 5430</td>
+                            <td>Luis Herrera (21460090)</td>
+                            <td>2026-11-10 08:30</td>
+                            <td>2026-11-10 15:10</td>
+                            <td>Buen estado / Buen estado</td>
+                            <td><span class="badge badge-devuelto">devuelto</span></td>
+                        </tr>
+                        <tr>
+                            <td>#104</td>
+                            <td>INV-LAP-001</td>
+                            <td>Laptop Dell Latitude 5430</td>
+                            <td>Carlos Méndez (20460115)</td>
+                            <td>2026-11-18 09:00</td>
+                            <td>Pendiente</td>
+                            <td>Buen estado / —</td>
+                            <td><span class="badge badge-activo">activo</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>Taller de Base de Datos — Proyecto Integrador</footer>
+    <script src="js/app.js"></script>
+</body>
+</html>
